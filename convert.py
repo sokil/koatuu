@@ -26,9 +26,9 @@ LEVEL3_TYPE_CITY_SETTLEMENT = 9                 # сільради, села, щ
 parser = argparse.ArgumentParser()
 parser.add_argument('--csv', metavar='csv_file', help='csv file to convert', required=True)
 parser.add_argument('--sql', metavar='sql_file', help='sql file to export')
-parser.add_argument('--districtsTable', metavar='districts', help='name of districts table', default='districts')
-parser.add_argument('--regionsTable', metavar='regions', help='name of regions table', default='regions')
-parser.add_argument('--citiesTable', metavar='cities', help='name of cities table', default='cities')
+parser.add_argument('--level1Table', metavar='level1', help='name of level1 table', default='level1')
+parser.add_argument('--level2Table', metavar='level2', help='name of level2 table', default='level2')
+parser.add_argument('--level3Table', metavar='level3', help='name of level3 table', default='level3')
 args = parser.parse_args()
 
 # open reader
@@ -40,9 +40,9 @@ csv_reader.next()
 
 
 # iterate
-districts = []
-regions = []
-cities = []
+level1 = []
+level2 = []
+level3 = []
 
 for row in csv_reader:
     name = row[2]
@@ -54,14 +54,14 @@ for row in csv_reader:
     level3_code = code[6:8]
     level4_code = code[8:]
 
-    is_district = level2_type == 0
-    is_region = level2_type == LEVEL2_TYPE_DISTRICT and level2_code != '00' and level3_type == 0
-    is_city = level2_type == LEVEL2_TYPE_DISTRICT_CITY and level2_code != '00' and level3_type == 0
-    is_settlement = level2_type in [LEVEL2_TYPE_DISTRICT, LEVEL2_TYPE_DISTRICT_CITY] and level3_type != 0 and level3_code != '00' and level4_code != '00'
+    is_level1 = level2_type == 0
+    is_level2 = level2_type == LEVEL2_TYPE_DISTRICT and level2_code != '00' and level3_type == 0
+    is_level3_city = level2_type == LEVEL2_TYPE_DISTRICT_CITY and level2_code != '00' and level3_type == 0
+    is_level3_settlement = level2_type in [LEVEL2_TYPE_DISTRICT, LEVEL2_TYPE_DISTRICT_CITY] and level3_type != 0 and level3_code != '00' and level4_code != '00'
 
-    district_id = level1_code
-    region_id = level1_code + level2_code
-    city_id = level1_code + level2_code + level3_code + level4_code
+    level1_id = level1_code
+    level2_id = level1_code + level2_code
+    level3_id = level1_code + level2_code + level3_code + level4_code
 
     # print " ".join([
     #     code,
@@ -74,28 +74,28 @@ for row in csv_reader:
     #     name
     # ])
 
-    # grab districts
-    if is_district:
-        district_name = name.split('/')[0].lower().replace("'", '\\\'')
-        districts.append("('" + "','".join([
-            district_id,
-            district_name
+    # grab level1
+    if is_level1:
+        level1_name = name.split('/')[0].lower().replace("'", '\\\'')
+        level1.append("('" + "','".join([
+            level1_id,
+            level1_name
         ]) + "')")
 
-    # grab regions
-    elif is_region:
-        region_name = name.split('/')[0].lower().replace("'", '\\\'')
-        regions.append("('" + "','".join([
-            region_id,
-            district_id,
-            region_name
+    # grab level2
+    elif is_level2:
+        level2_name = name.split('/')[0].lower().replace("'", '\\\'')
+        level2.append("('" + "','".join([
+            level2_id,
+            level1_id,
+            level2_name
         ]) + "')")
 
-    elif is_city or is_settlement:
-        cities.append("('" + "','".join([
+    elif is_level3_city or is_level3_settlement:
+        level3.append("('" + "','".join([
             code,
-            region_id,
-            district_id,
+            level2_id,
+            level1_id,
             name.replace("'", '\\\'')
         ]) + "')")
 
@@ -116,51 +116,51 @@ sql_file_handler.write("SET NAMES UTF8;")
 # write table creation instructions
 sql_file_handler.write(
 """
-DROP TABLE IF EXISTS {districtsTable};
-CREATE TABLE {districtsTable} (
+DROP TABLE IF EXISTS {level1Table};
+CREATE TABLE {level1Table} (
     id int not null,
     name varchar(255),
     PRIMARY KEY (id)
 ) DEFAULT CHARSET=UTF8 Engine=InnoDB;
-""".format('', districtsTable = args.districtsTable))
+""".format('', level1Table = args.level1Table))
 
 sql_file_handler.write(
 """
-DROP TABLE IF EXISTS {regionsTable};
-CREATE TABLE {regionsTable} (
+DROP TABLE IF EXISTS {level2Table};
+CREATE TABLE {level2Table} (
     id int not null,
-    district_id int not null,
+    level1_id int not null,
     name varchar(255),
     PRIMARY KEY (id),
-    KEY (district_id)
+    KEY (level1_id)
 ) DEFAULT CHARSET=UTF8 Engine=InnoDB;
-""".format('', regionsTable = args.regionsTable))
+""".format('', level2Table = args.level2Table))
 
 sql_file_handler.write(
 """
-DROP TABLE IF EXISTS {citiesTable};
-CREATE TABLE {citiesTable} (
+DROP TABLE IF EXISTS {level3Table};
+CREATE TABLE {level3Table} (
     id bigint not null,
-    region_id int not null,
-    district_id int not null,
+    level2_id int not null,
+    level1_id int not null,
     name varchar(255),
     PRIMARY KEY (id),
-    KEY (region_id),
-    KEY (district_id)
+    KEY (level2_id),
+    KEY (level1_id)
 ) DEFAULT CHARSET=UTF8 Engine=InnoDB;
-""".format('', citiesTable = args.citiesTable))
+""".format('', level3Table = args.level3Table))
 
-# write district insert operations
+# write level1 insert operations
 sql_file_handler.write("""
-INSERT INTO {districtsTable} VALUES {districts};
-""".format('', districtsTable = args.districtsTable, districts = ",".join(districts)))
+INSERT INTO {level1Table} VALUES {level1};
+""".format('', level1Table = args.level1Table, level1 = ",".join(level1)))
 
-# write region insert operations
+# write level2 insert operations
 sql_file_handler.write("""
-INSERT INTO {regionsTable} VALUES {regions};
-""".format('', regionsTable = args.regionsTable, regions = ",".join(regions)))
+INSERT INTO {level2Table} VALUES {level2};
+""".format('', level2Table = args.level2Table, level2 = ",".join(level2)))
 
-# write region insert operations
+# write level2 insert operations
 sql_file_handler.write("""
-INSERT INTO {citiesTable} VALUES {cities};
-""".format('', citiesTable = args.citiesTable, cities = ",".join(cities)))
+INSERT INTO {level3Table} VALUES {level3};
+""".format('', level3Table = args.level3Table, level3 = ",".join(level3)))
