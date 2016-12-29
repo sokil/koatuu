@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # (c) 2014, Dmytro Sokil <dmytro.sokil@gmail.com>
-# KOATUU database may be downloaded from http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.rar
+# KOATUU database may be downloaded from http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.zip
 
 import argparse
 import csv
