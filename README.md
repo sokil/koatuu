@@ -2,4 +2,4 @@
 
 Конвертор бази класифікатора КОАТУУ в SQL
 
-База може бути завантажена з http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.rar
+База може бути завантажена з http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.zip
