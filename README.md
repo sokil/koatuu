@@ -6,7 +6,7 @@ Converts CSV database to SQL files.
 
 Database may be downloaded from http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.zip
 
-last update: 18.12.2017
+Last update: 26.04.2018
 
 Basic useage
 ------------
