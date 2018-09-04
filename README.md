@@ -11,7 +11,7 @@ Database may be downloaded from http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.zi
 Basic useage
 ------------
 
-Download new database from http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.zip, convert `KOATUU_xxxxxxxx.csv` file to `csv` format, and run converter:
+Download new database from http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.zip, convert `KOATUU_xxxxxxxx.xls` file to `csv` format, and run converter:
 
 ```
 ./convert.py --csv KOATUU_26042018.csv
