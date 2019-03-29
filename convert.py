@@ -37,6 +37,7 @@ LEVEL3_TYPE_CITY_SETTLEMENT = 9                 # сільради, села, щ
 parser = argparse.ArgumentParser()
 parser.add_argument('--csv', metavar='csv_file', help='csv file to convert', required=True)
 parser.add_argument('--sql', metavar='sql_file', help='sql file to export')
+parser.add_argument('--verbose', help='verbose mode', action='store_true')
 parser.add_argument('--level1Table', metavar='level1', help='name of level1 table', default='level1')
 parser.add_argument('--level2Table', metavar='level2', help='name of level2 table', default='level2')
 parser.add_argument('--level3Table', metavar='level3', help='name of level3 table', default='level3')
@@ -73,16 +74,18 @@ for row in csv_reader:
     level2_table_row_id = level1_code + level2_code
     level3_table_row_id = level1_code + level2_code + level3_code + level4_code
 
-    print " ".join([
-        code,
-        level1_code,
-        str(level2_type),
-        level2_code,
-        str(level3_type),
-        level3_code,
-        level4_code,
-        name
-    ])
+    # show source line
+    if args.verbose:
+        print " ".join([
+            code,
+            level1_code,
+            str(level2_type),
+            level2_code,
+            str(level3_type),
+            level3_code,
+            level4_code,
+            name
+        ])
 
     # grab level1
     if is_level1:
