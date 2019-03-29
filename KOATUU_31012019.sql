@@ -18,8 +18,8 @@ CREATE TABLE level2 (
 
 DROP TABLE IF EXISTS level3;
 CREATE TABLE level3 (
-    id char(8) not null,
-    type int noy null,
+    id char(10) not null,
+    type int not null,
     level2_id char(4) not null,
     level2_type int not null,
     level1_id char(2) not null,
