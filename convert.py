@@ -8,9 +8,9 @@
 # 5320283602,С,ЗАПСІЛЛЯ
 # where:
 #   - 53: level 1 code
-#   - 2:  level 1 type
+#   - 2:  level 2 type
 #   - 02: level 2 code
-#   - 8:  level 2 type
+#   - 8:  level 3 type
 #   - 36: level 3 code
 #   - 02: level 4 code
 #
