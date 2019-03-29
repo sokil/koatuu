@@ -155,7 +155,7 @@ sql_file_handler.write(
 DROP TABLE IF EXISTS {level3Table};
 CREATE TABLE {level3Table} (
     id char(8) not null,
-    type int noy null,
+    type int not null,
     level2_id char(4) not null,
     level2_type int not null,
     level1_id char(2) not null,
