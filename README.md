@@ -23,7 +23,7 @@ Code consists from 10 chars:
 
 ### Level 2 type (char 3)
 
-|   |   |
+| Char number | Description |
 |---|---|
 | 1 | міста обласного значення |
 | 2 | райони Автономної Республіки Крим, області |
@@ -31,7 +31,7 @@ Code consists from 10 chars:
 
 ### Level 3 type (char 6)
 
-|   |   |
+| Char number | Description |
 |---|---|
 | 1 | міста районного значення |
 | 2 | is unused |
