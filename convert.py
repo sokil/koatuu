@@ -18,6 +18,7 @@
 import argparse
 import csv
 import os
+import sys
 
 LEVEL2_TYPE_DISTRICT_CITY = 1                   # міста обласного значення;
 LEVEL2_TYPE_DISTRICT = 2                        # райони Автономної Республіки Крим, області;
@@ -35,7 +36,7 @@ LEVEL3_TYPE_CITY_SETTLEMENT = 9                 # сільради, села, щ
 
 # parse command line arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('--csv', metavar='csv_file', help='csv file to convert', required=True)
+parser.add_argument('--source', metavar='sourcefile', help='source file to convert', required=True)
 parser.add_argument('--sql', metavar='sql_file', help='sql file to export')
 parser.add_argument('--verbose', help='verbose mode', action='store_true')
 parser.add_argument('--level1Table', metavar='level1', help='name of level1 table', default='level1')
@@ -43,19 +44,44 @@ parser.add_argument('--level2Table', metavar='level2', help='name of level2 tabl
 parser.add_argument('--level3Table', metavar='level3', help='name of level3 table', default='level3')
 args = parser.parse_args()
 
-# open reader
-csv_file_handler = open(args.csv, 'rb')
-csv_reader = csv.reader(csv_file_handler)
 
-# skip first line
-csv_reader.next()
+# CSV reader
+def create_csv_reader(filename):
+    # open reader
+    csv_file_handler = open(filename, 'rb')
+    csv_reader = csv.reader(csv_file_handler)
+
+    # skip first line
+    csv_reader.next()
+
+    for csv_row in csv_reader:
+        yield csv_row
+
+    # close reader
+    csv_file_handler.close()
+
+
+def create_xls_reader(filename):
+    raise Exception('XML reader currently not implemented')
+
+
+# Create reader
+source_type = os.path.splitext(args.source)[1]
+
+if source_type == '.csv':
+    reader = create_csv_reader(args.source)
+elif source_type == '.xls':
+    reader = create_xls_reader(args.source)
+else:
+    print("Source file not supporter")
+    sys.exit(0)
 
 # iterate
 level1 = []
 level2 = []
 level3 = []
 
-for row in csv_reader:
+for row in reader:
     name = row[2]
     code = '{0:010d}'.format(int(row[0]))
     level1_code = code[0:2]
@@ -115,16 +141,11 @@ for row in csv_reader:
             name.replace("'", '\\\'')
         ]) + "')")
 
-
-
-# close reader
-csv_file_handler.close()
-
 # prepare writer
 if args.sql:
     sqlFile = args.sql
 else:
-    sqlFile = os.path.basename(args.csv).split(".")[0] + ".sql"
+    sqlFile = os.path.basename(args.source).split(".")[0] + ".sql"
 
 sql_file_handler = open(sqlFile, "w")
 sql_file_handler.write("SET NAMES UTF8;")
