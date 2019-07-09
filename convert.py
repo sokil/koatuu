@@ -19,6 +19,7 @@ import argparse
 import xlrd
 import csv
 import os
+import io
 import sys
 
 LEVEL2_TYPE_DISTRICT_CITY = 1                   # міста обласного значення;
@@ -56,7 +57,7 @@ def create_csv_reader(filename):
     csv_reader.next()
 
     for csv_row in csv_reader:
-        yield csv_row
+        yield (unicode(csv_row[0], 'utf8'), unicode(csv_row[1], 'utf8'), unicode(csv_row[2], 'utf8'))
 
     # close reader
     csv_file_handler.close()
@@ -156,12 +157,12 @@ if args.sql:
 else:
     sqlFile = os.path.basename(args.source).split(".")[0] + ".sql"
 
-sql_file_handler = open(sqlFile, "w")
-sql_file_handler.write("SET NAMES UTF8;")
+sql_file_handler = io.open(sqlFile, "w", encoding="utf-8")
+sql_file_handler.write(u"SET NAMES UTF8;")
 
 # write table creation instructions
 sql_file_handler.write(
-"""
+u"""
 DROP TABLE IF EXISTS {level1Table};
 CREATE TABLE {level1Table} (
     id char(2) not null,
@@ -171,7 +172,7 @@ CREATE TABLE {level1Table} (
 """.format('', level1Table=args.level1Table))
 
 sql_file_handler.write(
-"""
+u"""
 DROP TABLE IF EXISTS {level2Table};
 CREATE TABLE {level2Table} (
     id char(4) not null,
@@ -184,7 +185,7 @@ CREATE TABLE {level2Table} (
 """.format('', level2Table=args.level2Table))
 
 sql_file_handler.write(
-"""
+u"""
 DROP TABLE IF EXISTS {level3Table};
 CREATE TABLE {level3Table} (
     id char(10) not null,
@@ -200,16 +201,15 @@ CREATE TABLE {level3Table} (
 """.format('', level3Table=args.level3Table))
 
 # write level1 insert operations
-sql_file_handler.write("""
-INSERT INTO {level1Table} VALUES {level1};
-""".format('', level1Table=args.level1Table, level1=",".join(level1)))
+q = u"INSERT INTO {level1Table} VALUES {level1};".format('', level1Table=args.level1Table, level1=u",".join(level1))
+sql_file_handler.write(q)
 
 # write level2 insert operations
-sql_file_handler.write("""
+sql_file_handler.write(u"""
 INSERT INTO {level2Table} VALUES {level2};
 """.format('', level2Table=args.level2Table, level2=",".join(level2)))
 
 # write level2 insert operations
-sql_file_handler.write("""
+sql_file_handler.write(u"""
 INSERT INTO {level3Table} VALUES {level3};
 """.format('', level3Table=args.level3Table, level3=",".join(level3)))
