@@ -16,6 +16,7 @@
 #
 
 import argparse
+import xlrd
 import csv
 import os
 import sys
@@ -62,7 +63,15 @@ def create_csv_reader(filename):
 
 
 def create_xls_reader(filename):
-    raise Exception('XML reader currently not implemented')
+    workbook = xlrd.open_workbook(filename, formatting_info=True)
+    sheet = workbook.sheet_by_index(0)
+    for row_id in range(1, sheet.nrows):
+        xls_row = sheet.row_values(row_id)
+
+        if not xls_row[0]:
+            continue
+
+        yield (xls_row[0], xls_row[1], xls_row[2])
 
 
 # Create reader
@@ -159,7 +168,7 @@ CREATE TABLE {level1Table} (
     name varchar(255),
     PRIMARY KEY (id)
 ) DEFAULT CHARSET=UTF8 Engine=InnoDB;
-""".format('', level1Table = args.level1Table))
+""".format('', level1Table=args.level1Table))
 
 sql_file_handler.write(
 """
@@ -172,7 +181,7 @@ CREATE TABLE {level2Table} (
     PRIMARY KEY (id),
     KEY (level1_id)
 ) DEFAULT CHARSET=UTF8 Engine=InnoDB;
-""".format('', level2Table = args.level2Table))
+""".format('', level2Table=args.level2Table))
 
 sql_file_handler.write(
 """
@@ -188,19 +197,19 @@ CREATE TABLE {level3Table} (
     KEY (level2_id),
     KEY (level1_id)
 ) DEFAULT CHARSET=UTF8 Engine=InnoDB;
-""".format('', level3Table = args.level3Table))
+""".format('', level3Table=args.level3Table))
 
 # write level1 insert operations
 sql_file_handler.write("""
 INSERT INTO {level1Table} VALUES {level1};
-""".format('', level1Table = args.level1Table, level1 = ",".join(level1)))
+""".format('', level1Table=args.level1Table, level1=",".join(level1)))
 
 # write level2 insert operations
 sql_file_handler.write("""
 INSERT INTO {level2Table} VALUES {level2};
-""".format('', level2Table = args.level2Table, level2 = ",".join(level2)))
+""".format('', level2Table=args.level2Table, level2=",".join(level2)))
 
 # write level2 insert operations
 sql_file_handler.write("""
 INSERT INTO {level3Table} VALUES {level3};
-""".format('', level3Table = args.level3Table, level3 = ",".join(level3)))
+""".format('', level3Table=args.level3Table, level3=",".join(level3)))
