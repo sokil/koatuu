@@ -168,6 +168,6 @@ target_file_handler.write(
         level3TableName=args.level3Table,
         level1Values=u",".join(level1Values),
         level2Values=u",".join(level2Values),
- add --all .        level3Values=u",".join(level3Values)
+        level3Values=u",".join(level3Values)
     )
 )
