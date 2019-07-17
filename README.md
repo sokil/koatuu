@@ -2,11 +2,12 @@
 
 State Classifier of objects of administrative and territorial structure of Ukraine
 
-Converts CSV database to SQL files.
+Converter from KOATUU database to SQL files.
 
-Database may be downloaded from http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.zip
+Source database may be downloaded from:
 
-**Last update**: 31.01.2019
+* CSV, XLS: http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.zip
+* JSON: https://data.gov.ua/dataset/d945de87-539c-45b4-932a-7dda57daf8d9/resource/296adb7a-476a-40c8-9de6-211327cb3aa1/download/koatuu.json
 
 ## Code structure
 
@@ -43,13 +44,27 @@ Code consists from 10 chars:
 | 8 | сільради, що входять до складу райради |
 | 9 | сільради, села, що входять до складу райради міста, міськради |
 
+### Example 
+
+```
+5320283602,С,ЗАПСІЛЛЯ
+```
+| Char number | Description | Value |
+|---|---|---|
+| 53 | level 1 code | ПОЛТАВСЬКА ОБЛАСТЬ/М.ПОЛТАВА)
+| 2 | level 2 type | райони Автономної Республіки Крим, області)
+| 02 | level 2 code | ВЕЛИКОБАГАЧАНСЬКИЙ РАЙОН/СМТ ВЕЛИКА БАГАЧКА)
+| 8 | level 3 type | сільради, що входять до складу райради)
+| 36 | level 3 code | ОСТАП'ЇВСЬКА/С.ОСТАП'Є |
+| 02 | level 4 code | ЗАПСІЛЛЯ |
+
 ## Basic usage
 
 1. Download new database from http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.zip and extract it;
 2. Сonvert `KOATUU_xxxxxxxx.xls` file to `csv` format;
 3. Run converter:
 ```
-./convert.py --csv KOATUU_26042018.csv
+./convert.py --source KOATUU_26042018.csv --format=mysql --target "db.sql"
 ```
 
 ## See also
