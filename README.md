@@ -4,6 +4,10 @@ State Classifier of objects of administrative and territorial structure of Ukrai
 
 Converter from KOATUU database to SQL files.
 
+Information amount data source: 
+* http://www.ukrstat.gov.ua/klasf/st_kls/op_koatuu_2016.htm
+* https://data.gov.ua/dataset/d945de87-539c-45b4-932a-7dda57daf8d9
+
 Source database may be downloaded from:
 
 * CSV, XLS: http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.zip
