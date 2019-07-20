@@ -149,7 +149,7 @@ for row in reader:
         ]))
 
 # prepare target file template
-template = open(target_format_template_file_path).read()
+template = open(target_format_template_file_path).read().decode('utf8')
 
 # prepare writer
 if args.target:
@@ -159,15 +159,15 @@ else:
 
 target_file_handler = io.open(targetFile, "w", encoding="utf-8")
 
-# write table creation instructions
-target_file_handler.write(
-    template.format(
-        '',
-        level1TableName=args.level1Table,
-        level2TableName=args.level2Table,
-        level3TableName=args.level3Table,
-        level1Values=u",".join(level1Values),
-        level2Values=u",".join(level2Values),
-        level3Values=u",".join(level3Values)
-    )
+target_file_content = template.format(
+    '',
+    level1TableName=args.level1Table,
+    level2TableName=args.level2Table,
+    level3TableName=args.level3Table,
+    level1Values=u",".join(level1Values),
+    level2Values=u",".join(level2Values),
+    level3Values=u",".join(level3Values)
 )
+
+# write table creation instructions
+target_file_handler.write(target_file_content)
