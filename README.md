@@ -13,6 +13,7 @@ Source database may be downloaded from:
 * CSV, XLS: http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.zip
 * JSON: https://data.gov.ua/dataset/d945de87-539c-45b4-932a-7dda57daf8d9/resource/296adb7a-476a-40c8-9de6-211327cb3aa1/download/koatuu.json
 
+
 ## Code structure
 
 Code consists from 10 chars:

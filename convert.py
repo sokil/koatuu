@@ -40,7 +40,7 @@ LEVEL3_TYPE_CITY_SETTLEMENT = 9                 # сільради, села, щ
 parser = argparse.ArgumentParser()
 parser.add_argument('--source', help='Source file to convert', required=True)
 parser.add_argument('--target', help='Target file to convert')
-parser.add_argument('--format', help='Format of target file. Available values: mysql, postgres', default='mysql')
+parser.add_argument('--format', help='Format of target file. Available values: mysql.sql, postgres', default='mysql.sql')
 parser.add_argument('--level1Table', help='Name of level1 table', default='level1')
 parser.add_argument('--level2Table', help='Name of level2 table', default='level2')
 parser.add_argument('--level3Table', help='Name of level3 table', default='level3')
@@ -79,25 +79,31 @@ def sql_insert_value_formatter(arguments):
     return u"('" + u"','".join(arguments) + "')"
 
 
+# locate source file
+source_path = args.source
+if not os.path.isfile(source_path):
+    print("Source file not found")
+    sys.exit(0)
+
 # Create reader
-source_format = os.path.splitext(args.source)[1]
+source_format = os.path.splitext(source_path)[1]
 
 if source_format == '.csv':
-    reader = create_csv_reader(args.source)
+    reader = create_csv_reader(source_path)
 elif source_format == '.xls':
-    reader = create_xls_reader(args.source)
+    reader = create_xls_reader(source_path)
 else:
     print("Source file not supported")
     sys.exit(0)
 
 # Target format
-if args.format in ["mysql", "postgres"]:
-    target_format_template_file_path = 'template/{format}.sql'.format('', format=args.format)
-    target_file_ext = 'sql'
-    value_formatter = sql_insert_value_formatter
-else:
+target_format_template_file_path = 'template/{format}.sql'.format('', format=args.format)
+if not os.path.isfile(target_format_template_file_path):
     print("Target file format not supported")
     sys.exit(0)
+
+target_file_ext = 'sql'
+value_formatter = sql_insert_value_formatter
 
 # iterate
 level1Values = []
@@ -155,7 +161,7 @@ template = open(target_format_template_file_path).read().decode('utf8')
 if args.target:
     targetFile = args.target
 else:
-    targetFile = os.path.basename(args.source).split(".")[0] + "." + target_file_ext
+    targetFile = os.path.basename(source_path).split(".")[0] + "." + target_file_ext
 
 target_file_handler = io.open(targetFile, "w", encoding="utf-8")
 
