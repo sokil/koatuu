@@ -2,6 +2,8 @@
 
 State Classifier of objects of administrative and territorial structure of Ukraine
 
+Last update from 26.11.2020
+
 Converter from KOATUU database to SQL files.
 
 Information amount data source: 
