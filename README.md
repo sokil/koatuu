@@ -69,7 +69,10 @@ Code consists from 10 chars:
 
 Requirements:
 python 2.x
-Installed dependencies by running "pip install -r requirements.txt"
+Installed dependencies by running command
+```bash
+pip install -r requirements.txt
+```
 
 Then:
 
