@@ -67,6 +67,12 @@ Code consists from 10 chars:
 
 ## Basic usage
 
+Requirements:
+python 2.x
+Installed dependencies by running "pip install -r requirements.txt"
+
+Then:
+
 1. Download new database from http://www.ukrstat.gov.ua/klasf/st_kls/koatuu.zip and extract it;
 2. Сonvert `KOATUU_xxxxxxxx.xls` file to `csv` format;
 3. Run converter:
